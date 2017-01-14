@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#Scripts Provisioning LTSP
+$scriptInitLTSPServer = <<SCRIPT
+apt-get install gdm3 -y
+service gdm3 stop
+cp /vagrant/conf/daemon.conf /etc/gdm3/daemon.conf
+service gdm3 start
+apt-get install ltsp-server-standalone 
+mkdir -p /etc/ltsp/
+cp /vagrant/conf/dhcpd.conf /etc/ltsp/dhcpd.conf
+ltsp-build-client
+cp /vagrant/conf/lts.conf /opt/ltsp/i386/etc/lts.conf
+SCRIPT
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "ltspserver" do |ltspserver|
+    ltspserver.vm.box = "ubuntu/xenial64"
+    ltspserver.vm.box_check_update = false
+	ltspserver.vm.network :public_network, :public_network => "ens33"
+    ltspserver.vm.network "private_network", ip: "10.0.0.100"
+    ltspserver.vm.hostname = "ltspserver"
+    ltspserver.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.memory = "2048"
+    end
+	config.vm.provision "shell", inline: $scriptInitLTSPServer
+  end
+end
