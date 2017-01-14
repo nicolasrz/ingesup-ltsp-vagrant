@@ -3,15 +3,30 @@
 
 #Scripts Provisioning LTSP
 $scriptInitLTSPServer = <<SCRIPT
-apt-get install gdm3 -y
-service gdm3 stop
-cp /vagrant/conf/daemon.conf /etc/gdm3/daemon.conf
-service gdm3 start
-apt-get install ltsp-server-standalone 
-mkdir -p /etc/ltsp/
-cp /vagrant/conf/dhcpd.conf /etc/ltsp/dhcpd.conf
-ltsp-build-client
-cp /vagrant/conf/lts.conf /opt/ltsp/i386/etc/lts.conf
+sudo apt-get update -y
+sudo apt-get install gdm3 -y
+sudo service gdm3 stop
+sudo cp /vagrant/conf/daemon.conf /etc/gdm3/daemon.conf -r
+sudo service gdm3 start
+sudo apt-get install ltsp-server-standalone -y
+sudo mkdir -p /etc/ltsp/
+sudo cp /vagrant/conf/ltsp-dhcpd.conf /etc/ltsp/dhcpd.conf -r
+sudo ltsp-build-client --arch i386
+sudo cp /vagrant/conf/lts.conf /opt/ltsp/i386/etc/lts.conf 
+sudo service tftpd-hpa start
+sudo apt-get install isc-dhcp-server
+sudo mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.bak
+sudo cp /vagrant/conf/dhcpd.conf /etc/dhcp/dhcpd.conf
+sudo service isc-dhcp-server restart
+#sudo apt-get install xdm -y
+#sudo mv /etc/X11/xdm/Xservers /etc/X11/xdm/Xservers.bak
+#sudo cp /vagrant/conf/Xservers /etc/X11/xdm/Xservers
+#sudo mv /etc/X11/xdm/Xaccess /etc/X11/xdm/Xaccess.bak
+#sudo cp /vagrant/conf/Xaccess /etc/X11/xdm/Xaccess
+#sudo service xdm start
+sudo ltsp-update-sshkeys
+sudo ltsp-update-kernels
+sudo ltsp-update-image
 SCRIPT
 
 Vagrant.configure("2") do |config|
@@ -26,6 +41,6 @@ Vagrant.configure("2") do |config|
       vb.gui = true
       vb.memory = "2048"
     end
-	config.vm.provision "shell", inline: $scriptInitLTSPServer
+	#config.vm.provision "shell", inline: $scriptInitLTSPServer
   end
 end

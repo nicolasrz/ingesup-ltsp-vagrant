@@ -1,0 +1,6 @@
+# Lancer le serveur X en local
+# Et permêttera de présenter un écran d'authentification sur les serveurs X tournant sur les hôtes.
+:0 local /usr/bin/X11/X vt7
+
+# Toutes les machines distante
+*:0 foreign
