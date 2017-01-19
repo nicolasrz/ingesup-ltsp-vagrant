@@ -18,12 +18,12 @@ sudo apt-get install isc-dhcp-server
 sudo mv /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.bak
 sudo cp /vagrant/conf/dhcpd.conf /etc/dhcp/dhcpd.conf
 sudo service isc-dhcp-server restart
-#sudo apt-get install xdm -y
-#sudo mv /etc/X11/xdm/Xservers /etc/X11/xdm/Xservers.bak
-#sudo cp /vagrant/conf/Xservers /etc/X11/xdm/Xservers
-#sudo mv /etc/X11/xdm/Xaccess /etc/X11/xdm/Xaccess.bak
-#sudo cp /vagrant/conf/Xaccess /etc/X11/xdm/Xaccess
-#sudo service xdm start
+sudo apt-get install xdm -y
+sudo mv /etc/X11/xdm/Xservers /etc/X11/xdm/Xservers.bak
+sudo cp /vagrant/conf/Xservers /etc/X11/xdm/Xservers
+sudo mv /etc/X11/xdm/Xaccess /etc/X11/xdm/Xaccess.bak
+sudo cp /vagrant/conf/Xaccess /etc/X11/xdm/Xaccess
+sudo service xdm start
 sudo ltsp-update-sshkeys
 sudo ltsp-update-kernels
 sudo ltsp-update-image
@@ -41,6 +41,6 @@ Vagrant.configure("2") do |config|
       vb.gui = true
       vb.memory = "2048"
     end
-	#config.vm.provision "shell", inline: $scriptInitLTSPServer
+	config.vm.provision "shell", inline: $scriptInitLTSPServer
   end
 end
